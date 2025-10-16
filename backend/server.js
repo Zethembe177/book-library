@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
 require('dotenv').config({ path: './db.env' });
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
@@ -22,8 +23,10 @@ db.connect(err => {
   if (err) throw err;
   console.log("✅ MySQL Connected...");
 });
+
+
 //Import routes
 const booksRoutes = require("./routes/books")(db);
-app.use("/books", booksRoutes);
+app.use("/api/books", booksRoutes);
 
-app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
