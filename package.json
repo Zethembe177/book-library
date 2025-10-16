@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "build": "cd backend && npm install",
-    "start": "node -r dotenv/config backend/server.js"
+    "start": "node backend/server.js"
   }
 }
