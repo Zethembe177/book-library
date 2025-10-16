@@ -1,7 +1,8 @@
+require('dotenv').config({ path: './db.env' });
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
-require('dotenv').config({ path: './db.env' });
+
 const PORT = process.env.PORT
 
 const app = express();
