@@ -36,5 +36,4 @@ app.get('/test', (req, res) => {
 //Import routes
 const booksRoutes = require("./routes/books")(db);
 app.use("/api/books", booksRoutes);
-
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
