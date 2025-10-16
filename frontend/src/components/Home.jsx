@@ -21,7 +21,7 @@ const filteredBooks = books.filter((book) =>
   
 const fetchBooks = async () => {
   try {
-    const res = await axios.get("http://localhost:5000/books");
+    const res = await axios.get("https://book-library-production-eb37.up.railway.app/books");
     dispatch(setBooks(res.data)); // update Redux state
   } catch (err) {
     console.error("Error fetching books:", err);
@@ -35,7 +35,7 @@ useEffect(() => {
   // Borrow a book
   const borrowBook = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/books/borrow/${id}`, {
+      await axios.post(`https://book-library-production-eb37.up.railway.app/books/borrow/${id}`, {
         borrower_name: "John Doe",
         borrowed_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
       });
@@ -48,7 +48,7 @@ useEffect(() => {
   // Return a book
   const returnBook = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/books/return/${id}`, {
+      await axios.post(`https://book-library-production-eb37.up.railway.app/books/return/${id}`, {
         returned_date: new Date().toISOString().split("T")[0],
       });
         dispatch(returnBookAction(id)); // marks book as available in Redux
