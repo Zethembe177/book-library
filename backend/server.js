@@ -23,6 +23,10 @@ db.connect(err => {
   if (err) throw err;
   console.log("✅ MySQL Connected...");
 });
+// Test route to check if backend is alive
+app.get('/test', (req, res) => {
+  res.json({ status: "Backend is working!", time: new Date() });
+});
 
 
 //Import routes
