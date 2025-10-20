@@ -1,27 +1,23 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
 
-// Load env variables from db.env
-dotenv.config({ path: "./db.env" });
+dotenv.config(); // Works locally and Railway
 
-// Create a MySQL connection using env variables
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,       // Railway internal hostname
+  host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT        // Railway internal port
+  port: process.env.DB_PORT || 3306
 });
 
-// Connect safely
 db.connect(err => {
   if (err) {
     console.error("❌ MySQL connection failed:", err.message);
-    process.exit(1); // Stop the script, don’t crash a server
+    process.exit(1);
   }
-  console.log("✅ Connected to Railway MySQL");
+  console.log("✅ Connected to MySQL");
 
-  // Create 'books' table
   const createBooksTable = `
     CREATE TABLE IF NOT EXISTS books (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +29,7 @@ db.connect(err => {
     );
   `;
 
-  db.query(createBooksTable, (err, result) => {
+  db.query(createBooksTable, (err) => {
     if (err) {
       console.error("❌ Failed to create 'books' table:", err.message);
       db.end();
@@ -41,7 +37,6 @@ db.connect(err => {
     }
     console.log("✅ 'books' table created or already exists");
 
-    // Create 'borrowed_books' table
     const createBorrowedBooksTable = `
       CREATE TABLE IF NOT EXISTS borrowed_books (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -53,13 +48,13 @@ db.connect(err => {
       );
     `;
 
-    db.query(createBorrowedBooksTable, (err, result) => {
+    db.query(createBorrowedBooksTable, (err) => {
       if (err) {
         console.error("❌ Failed to create 'borrowed_books' table:", err.message);
       } else {
         console.log("✅ 'borrowed_books' table created or already exists");
       }
-      db.end(); // Close connection after finishing
+      db.end();
     });
   });
 });
