@@ -21,7 +21,8 @@ const filteredBooks = books.filter((book) =>
   
 const fetchBooks = async () => {
   try {
-    const res = await axios.get("https://book-library-production-eb37.up.railway.app/books");
+    const res = await axios.get("https://book-library-production-eb37.up.railway.app/api/books")
+;
     dispatch(setBooks(res.data)); // update Redux state
   } catch (err) {
     console.error("Error fetching books:", err);
@@ -35,10 +36,11 @@ useEffect(() => {
   // Borrow a book
   const borrowBook = async (id) => {
     try {
-      await axios.post(`https://book-library-production-eb37.up.railway.app/books/borrow/${id}`, {
-        borrower_name: "John Doe",
-        borrowed_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
-      });
+      await axios.post(`https://book-library-production-eb37.up.railway.app/api/books/borrow/${id}`, {
+  borrower_name: "John Doe",
+  borrowed_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
+});
+
       dispatch(borrowBookAction(id)); // marks book as borrowed in Redux
     } catch (err) {
       console.error(err);
@@ -48,7 +50,7 @@ useEffect(() => {
   // Return a book
   const returnBook = async (id) => {
     try {
-      await axios.post(`https://book-library-production-eb37.up.railway.app/books/return/${id}`, {
+      await axios.post(`https://book-library-production-eb37.up.railway.app/api/books/return/${id}`, {
         returned_date: new Date().toISOString().split("T")[0],
       });
         dispatch(returnBookAction(id)); // marks book as available in Redux
