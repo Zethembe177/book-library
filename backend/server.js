@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://book-library-production-eb37.up.railway.app"],
+    origin: ["http://localhost:5173", "https://book-library-zet.netlify.app",],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
