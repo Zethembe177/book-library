@@ -1,9 +1,19 @@
 {
-  "name": "book-library-root",
+  "name": "book-library-backend",
   "version": "1.0.0",
-  "private": true,
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "build": "cd backend && npm install",
-    "start": "node backend/server.js"
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "mysql2": "^3.3.0",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
