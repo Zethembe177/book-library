@@ -9,7 +9,7 @@ function AddBook() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/books", { title, author, category });
+      await axios.post("https://book-library-production-eb37.up.railway.app/api/books", { title, author, category });
       alert("Book added successfully!");
       setTitle("");
       setAuthor("");
