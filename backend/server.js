@@ -67,10 +67,15 @@ app.get('/test-db', (req, res) => {
 
 // Import and use routes
 console.log("📦 Loading books routes...");
-app.use("/api/books", (req, res, next) => {
-  console.log(`📌 ${req.method} request to ${req.originalUrl}`);
-  next();
-}, createBooksRoutes(db));
+app.use("/api/books", async (req, res, next) => {
+  try {
+    await createBooksRoutes(db)(req, res, next); // call your original route function
+  } catch (err) {
+    console.error("🚨 Endpoint error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
