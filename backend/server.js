@@ -35,10 +35,17 @@ const db = mysql.createConnection({
 db.connect(err => {
   if (err) {
     console.error("❌ MySQL connection failed:", err.message);
-  } else {
-    console.log(`✅ MySQL Connected to database "${process.env.DB_NAME}" at ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+    process.exit(1); // stop server if connection fails
   }
+  console.log(`✅ MySQL connected to database "${process.env.DB_NAME}" at ${process.env.DB_HOST}:${process.env.DB_PORT}`);
 
+  db.query("SHOW TABLES", (err, results) => {
+    if (err) {
+      console.error("❌ Query failed:", err.message);
+      process.exit(1); // stop server if query fails
+    }
+    console.log("✅ Tables in DB:", results.map(r => Object.values(r)[0]));
+  });
 });
 
 app.get('/test', (req, res) => {
