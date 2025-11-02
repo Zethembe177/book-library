@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://book-library-zet.netlify.app",],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
@@ -44,6 +44,17 @@ db.connect(err => {
 app.get('/test', (req, res) => {
   console.log("📢 /test endpoint was hit");
   res.json({ status: "Backend is working!", time: new Date() });
+});
+// Test route
+app.get('/test-db', (req, res) => {
+  db.query('SELECT 1 + 1 AS result', (err, results) => {
+    if (err) {
+      console.error("❌ Database test query failed:", err.message);
+      return res.status(500).json({ status: 'error', message: err.message });
+    }
+    console.log("✅ Database test query succeeded:", results[0].result);
+    res.json({ status: 'success', result: results[0].result });
+  });
 });
 
 

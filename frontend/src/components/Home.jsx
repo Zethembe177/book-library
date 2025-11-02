@@ -16,12 +16,13 @@ const filteredBooks = books.filter((book) =>
   book.category.toLowerCase().includes(query.toLowerCase())
 );
 
+const API_BASE = "http://localhost:3000/api";
 
   // Fetch books from backend
   
 const fetchBooks = async () => {
   try {
-    const res = await axios.get("https://book-library-production-eb37.up.railway.app/api/books")
+    const res = await axios.get(`${API_BASE}/books`)
 ;
     dispatch(setBooks(res.data)); // update Redux state
   } catch (err) {
@@ -36,7 +37,7 @@ useEffect(() => {
   // Borrow a book
   const borrowBook = async (id) => {
     try {
-      await axios.post(`https://book-library-production-eb37.up.railway.app/api/books/borrow/${id}`, {
+      await axios.post(`${API_BASE}/books/borrow/${id}`, {
   borrower_name: "John Doe",
   borrowed_date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
 });
@@ -50,7 +51,7 @@ useEffect(() => {
   // Return a book
   const returnBook = async (id) => {
     try {
-      await axios.post(`https://book-library-production-eb37.up.railway.app/api/books/return/${id}`, {
+      await axios.post(`${API_BASE}/books/return/${id}`, {
         returned_date: new Date().toISOString().split("T")[0],
       });
         dispatch(returnBookAction(id)); // marks book as available in Redux
