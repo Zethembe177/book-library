@@ -1,20 +1,14 @@
-// db.js
-const mysql = require('mysql2/promise');
-const dns = require('dns').promises;
+import mysql from "mysql2/promise";
+import dns from "dns/promises";
 
 let cachedIp = null;
 
 async function resolveHost() {
   if (cachedIp) return cachedIp;
-  try {
-    const { address } = await dns.lookup(process.env.DB_HOST);
-    cachedIp = address;
-    console.log(`DNS OK: ${process.env.DB_HOST} → ${address}`);
-    return address;
-  } catch (err) {
-    console.error('DNS failed:', err.message);
-    throw err;
-  }
+  const { address } = await dns.lookup(process.env.DB_HOST);
+  cachedIp = address;
+  console.log(`DNS OK: ${process.env.DB_HOST} → ${address}`);
+  return address;
 }
 
 async function connectWithRetry(maxRetries = 5) {
@@ -30,7 +24,7 @@ async function connectWithRetry(maxRetries = 5) {
         ssl: { rejectUnauthorized: false },
         connectTimeout: 15000
       });
-      console.log('MySQL CONNECTED!');
+      console.log("MySQL CONNECTED!");
       return conn;
     } catch (err) {
       console.log(`Retry ${i + 1}/${maxRetries}:`, err.code || err.message);
@@ -40,4 +34,5 @@ async function connectWithRetry(maxRetries = 5) {
   }
 }
 
-module.exports = connectWithRetry();
+// ✅ Export as default for ES module import
+export default connectWithRetry();
