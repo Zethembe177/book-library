@@ -16,7 +16,7 @@ const filteredBooks = books.filter((book) =>
   book.category.toLowerCase().includes(query.toLowerCase())
 );
 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE =  "https://book-library-production-eb37.up.railway.app/api";
 
   // Fetch books from backend
   
