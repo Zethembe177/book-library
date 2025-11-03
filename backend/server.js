@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import createBooksRoutes from "./routes/books.js";
-const connectDb = require("./db.js"); // if you use module.exports
+import connectDb from "./db.js"; // ✅ correct for ES modules
+
 
 
 dotenv.config();
