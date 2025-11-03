@@ -16,7 +16,7 @@ const filteredBooks = books.filter((book) =>
   book.category.toLowerCase().includes(query.toLowerCase())
 );
 
-const API_BASE = "https://book-library-backend-xf69.onrender.com/api/";
+const API_BASE = "https://book-library-backend-xf69.onrender.com/api";
 
   // Fetch books from backend
   

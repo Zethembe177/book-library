@@ -5,11 +5,11 @@ function AddBook() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
-
+const API_BASE = "https://book-library-backend-xf69.onrender.com/api";
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://book-library-production-eb37.up.railway.app/api/books", { title, author, category });
+      await axios.post(`${API_BASE}/books`, { title, author, category });
       alert("Book added successfully!");
       setTitle("");
       setAuthor("");
