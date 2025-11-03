@@ -78,9 +78,7 @@ app.use("/api/books", async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 });
-setInterval(() => {
-  console.log("💓 Server is alive...");
-}, 60000); // every 60 seconds
+
 // --- Start server ---
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
