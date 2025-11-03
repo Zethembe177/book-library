@@ -1,13 +1,12 @@
 import express from "express";
 import cors from "cors";
-import mysql from "mysql2";
 import dotenv from "dotenv";
 import createBooksRoutes from "./routes/books.js";
+import connectDb from "./db.js"; // <-- import the new db.js
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
-
 const app = express();
 
 app.use(
@@ -22,64 +21,58 @@ app.use(express.json());
 
 console.log("🔄 Starting backend server...");
 
-// --- MySQL connection ---
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
+// --- Async startup: connect to DB before starting server ---
+(async () => {
+  try {
+    const db = await connectDb; // await the MySQL connection from db.js
+    app.locals.db = db; // make the connection available in routes
 
-db.connect((err) => {
-  if (err) {
-    console.error("❌ MySQL connection failed:", err.message);
-    // DO NOT exit process, just log error for deployment
-  } else {
     console.log(
       `✅ MySQL connected to database "${process.env.DB_NAME}" at ${process.env.DB_HOST}:${process.env.DB_PORT}`
     );
 
-    // Safe test query to check tables
-    db.query("SHOW TABLES", (err, results) => {
-      if (err) {
-        console.error("⚠️ SHOW TABLES query failed:", err.message);
-      } else {
-        console.log("✅ Tables in DB:", results.map((r) => Object.values(r)[0]));
+    // Optional: check tables
+    try {
+      const [results] = await db.query("SHOW TABLES");
+      console.log("✅ Tables in DB:", results.map((r) => Object.values(r)[0]));
+    } catch (err) {
+      console.warn("⚠️ SHOW TABLES query failed:", err.message);
+    }
+
+    // --- Simple test endpoints ---
+    app.get("/test", (req, res) => {
+      console.log("📢 /test endpoint was hit");
+      res.json({ status: "Backend is working!", time: new Date() });
+    });
+
+    app.get("/test-db", async (req, res) => {
+      try {
+        const [results] = await db.query("SELECT 1 + 1 AS result");
+        console.log("✅ Database test query succeeded:", results[0].result);
+        res.json({ status: "success", result: results[0].result });
+      } catch (err) {
+        console.error("❌ Database test query failed:", err.message);
+        res.status(500).json({ status: "error", message: err.message });
       }
     });
-  }
-});
 
-// --- Simple test endpoints ---
-app.get("/test", (req, res) => {
-  console.log("📢 /test endpoint was hit");
-  res.json({ status: "Backend is working!", time: new Date() });
-});
+    // --- Books routes ---
+    console.log("📦 Loading books routes...");
+    app.use("/api/books", async (req, res, next) => {
+      try {
+        await createBooksRoutes(db)(req, res, next);
+      } catch (err) {
+        console.error("🚨 Endpoint error:", err);
+        res.status(500).json({ error: err.message });
+      }
+    });
 
-app.get("/test-db", (req, res) => {
-  db.query("SELECT 1 + 1 AS result", (err, results) => {
-    if (err) {
-      console.error("❌ Database test query failed:", err.message);
-      return res.status(500).json({ status: "error", message: err.message });
-    }
-    console.log("✅ Database test query succeeded:", results[0].result);
-    res.json({ status: "success", result: results[0].result });
-  });
-});
-
-// --- Wrap routes with error logging ---
-console.log("📦 Loading books routes...");
-app.use("/api/books", async (req, res, next) => {
-  try {
-    await createBooksRoutes(db)(req, res, next);
+    // --- Start server ---
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
   } catch (err) {
-    console.error("🚨 Endpoint error:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ Startup failed:", err);
+    process.exit(1);
   }
-});
-
-// --- Start server ---
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+})();
