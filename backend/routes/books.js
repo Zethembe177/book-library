@@ -79,6 +79,27 @@ export default function createBooksRoutes(db) {
       return res.status(500).json({ error: err.message });
     }
   });
+  // GET /api/books/search?title=someTitle
+router.get("/search", async (req, res) => {
+  const { title } = req.query; // get the title query parameter
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({ error: "Title query is required" });
+  }
+
+  try {
+    const [results] = await db.execute(
+      "SELECT id, title, author FROM books WHERE title LIKE ?",
+      [`%${title}%`] // partial match
+    );
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error searching books:", err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 
   return router;
 }
